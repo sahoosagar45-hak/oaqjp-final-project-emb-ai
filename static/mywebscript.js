@@ -1,5 +1,5 @@
-let RunSentimentAnalysis = () => {
-    let textToAnalyze = document.getElementById("textToAnalyze").value;
+function RunSentimentAnalysis() {
+    const textToAnalyze = document.getElementById("textToAnalyze").value;
 
     fetch("/emotionDetector", {
         method: "POST",
@@ -10,13 +10,9 @@ let RunSentimentAnalysis = () => {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.formatted) {
-                document.getElementById("system_response").innerHTML = data.formatted;
-            } else if (data.error) {
-                document.getElementById("system_response").innerHTML = data.error;
-            }
+            document.getElementById("system_response").innerHTML = data.formatted;
         })
-        .catch(err => {
-            document.getElementById("system_response").innerHTML = "Error analyzing text: " + err;
+        .catch(error => {
+            document.getElementById("system_response").innerHTML = "Error analyzing text.";
         });
 }

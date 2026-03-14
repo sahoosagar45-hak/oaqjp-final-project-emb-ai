@@ -1,8 +1,10 @@
+<!DOCTYPE html>
 <html>
 
 <head>
+    <title>NLP Emotion Detection</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="./static/mywebscript.js"></script>
+    <script src="{{ url_for('static', filename='mywebscript.js') }}"></script>
     <style>
         .center-heading {
             text-align: center;
@@ -18,16 +20,13 @@
                 <label class="form-label">Please enter the text to be analyzed</label>
                 <input type="text" class="form-control" id="textToAnalyze">
             </div>
-
             <div style="padding: 25px;">
                 <button onclick="RunSentimentAnalysis()" class="btn btn-secondary">Run Sentiment Analysis</button>
             </div>
-
-            <h2 class="mb-3" style="padding: 25px;">
+            <div style="padding: 25px;">
                 <label class="form-label">Result of Emotion Detection</label>
-            </h2>
-
-            <div id="system_response" style="padding: 25px;"></div>
+                <div id="system_response"></div>
+            </div>
         </div>
     </div>
 </body>

@@ -1,21 +1,32 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
-from EmotionDetection.emotion_detection import emotion_detector
+from flask import Flask, render_template, request, jsonify
+from EmotionDetection.emotion_detection import emotion_detector  # your function
 
 app = Flask(__name__)
 
-# Make the home page redirect to /emotionDetector
-@app.route("/")
-def home():
-    return redirect(url_for("emotionDetector"))
-
-@app.route('/emotionDetector', methods=['GET', 'POST'])
+@app.route('/emotionDetector', methods=['POST'])
 def emotionDetector():
-    if request.method == 'POST':
-        data = request.get_json() or request.form
-        statement = data.get("statement", "")
+    data = request.get_json() or request.form
+    statement = data.get("statement", "").strip()
 
-        try:
-            result = emotion_detector(statement)
+    if not statement:
+        # Blank input handling
+        return jsonify({
+            "raw": {
+                "anger": None,
+                "disgust": None,
+                "fear": None,
+                "joy": None,
+                "sadness": None,
+                "dominant_emotion": None
+            },
+            "formatted": "Invalid text! Please try again!"
+        })
+
+    try:
+        result = emotion_detector(statement)
+        if not result.get("dominant_emotion"):
+            formatted = "Invalid text! Please try again!"
+        else:
             formatted = (
                 f"For the given statement, the system response is "
                 f"'anger': {result['anger']}, 'disgust': {result['disgust']}, "
@@ -23,12 +34,17 @@ def emotionDetector():
                 f"and 'sadness': {result['sadness']}. "
                 f"The dominant emotion is {result['dominant_emotion']}."
             )
-            return jsonify({"raw": result, "formatted": formatted})
-        except Exception as e:
-            return jsonify({"error": f"Error analyzing text: {str(e)}"})
+    except Exception as e:
+        result = {}
+        formatted = f"Error analyzing text: {str(e)}"
 
+    return jsonify({"raw": result, "formatted": formatted})
+
+
+@app.route('/')
+def home():
     return render_template('index.html')
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(debug=True)
