@@ -3,9 +3,7 @@ function RunSentimentAnalysis() {
 
     fetch("/emotionDetector", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ statement: textToAnalyze })
     })
         .then(response => response.json())
